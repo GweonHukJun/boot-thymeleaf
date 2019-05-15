@@ -7,8 +7,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import idu.cs.domain.User;
+import idu.cs.exception.ResourceNotFoundException;
 import idu.cs.repository.UserRepository;
 
 @Controller
@@ -21,6 +23,11 @@ public class HomeController {
 		model.addAttribute("egy", "유응구");
 		return "index";
 	}
+	@GetMapping("/register")
+	public String getRegForm(Model model) {
+		return "form";
+	}
+	
 	@GetMapping("/users")
 	public String getAllUser(Model model) {
 		model.addAttribute("users", userRepo.findAll());
@@ -28,11 +35,21 @@ public class HomeController {
 	}
 	@PostMapping("/users")
 	public String createUser(@Valid @RequestBody User user, Model model) {
-		user.setCompany("induk");
-		user.setName("권혁준");
+		
 		userRepo.save(user);
 		
 		model.addAttribute("users", userRepo.findAll());
 		return "redirect:/users";
 	}
+
+	@GetMapping("/users/{id}")
+	public String getUserById(@PathVariable(value = "id") Long userId, Model model)
+			throws ResourceNotFoundException {
+		User user = userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found for this id :: " + userId));
+		model.addAttribute("name", user.getName());
+		model.addAttribute("company", user.getCompany());
+		return "user";
+		//return ResponseEntity.ok().body(user);
+	}
+	
 }

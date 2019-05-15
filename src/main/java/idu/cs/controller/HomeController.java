@@ -28,7 +28,10 @@ public class HomeController {
 	}
 	@PostMapping("/users")
 	public String createUser(@Valid @RequestBody User user, Model model) {
+		user.setCompany("induk");
+		user.setName("권혁준");
 		userRepo.save(user);
+		
 		model.addAttribute("users", userRepo.findAll());
 		return "redirect:/users";
 	}

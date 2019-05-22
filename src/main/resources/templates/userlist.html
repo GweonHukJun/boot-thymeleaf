@@ -8,6 +8,9 @@
 <title>Insert title here</title>
 </head>
 <body>
+
+<th:block th:include="fragments/nav"></th:block>
+
 <table class="table">
   <thead class="thead-dark">
     <tr>
@@ -18,12 +21,16 @@
   </thead>
   <tbody>
    <tr th:each="user : ${users}">
-		<th scope="row"><span th:text="${user.id}"></span></th>
+		<th scope="row">
+		<a th:href = "@{/users/{id}(id=${user.id})}">
+		<span th:text="${user.id}"></span></th>
 		<td> <span th:text="${user.name}"></span></td>
 		<td> <span th:text="${user.company}"></span></td>
 	</tr>
   </tbody>
 </table>
+
+<th:block th:include="fragments/footer"></th:block>
 
 </body>
 </html>

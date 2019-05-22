@@ -28,7 +28,7 @@ function fire_ajax_submit() {
         dataType: 'text',
         success: function (formArray) {
         	console.log("SUCCESS : ", formArray);
-        	window.location.href = "/users";
+        	window.location.href = "/users"; //get방식
         	
         },
         error: function (e) {

@@ -55,6 +55,14 @@ public class UserController {
 		return "redirect:/";
 	}
 	
+	@GetMapping("/logout")
+	public String logoutUser(HttpSession session) {
+		session.removeAttribute("user");
+		// session.invalidate();
+		//모든 세션을 삭제한다.
+		return "redirect:/";
+	}
+	
 	@GetMapping("/user-register-form")
 	public String getForm(Model model) {
 		return "register";

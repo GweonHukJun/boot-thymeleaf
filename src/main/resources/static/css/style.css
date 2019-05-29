@@ -2589,13 +2589,13 @@ ul {
   position: fixed;
   z-index: 9999 !important;
   width: 100%;
-  background-color: #e614ff;
+  background-color: #ffffff;
   top: 0;
 }
 
 /* line 94, E:/170 Kanox Agency/170_Kanox_Agency_html/sass/_menu.scss */
 .menu_fixed .main-menu-item ul li a {
-  color: #fff !important;
+  color: #000 !important;
 }
 
 /* line 98, E:/170 Kanox Agency/170_Kanox_Agency_html/sass/_menu.scss */

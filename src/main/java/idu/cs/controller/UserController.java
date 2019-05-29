@@ -2,6 +2,7 @@ package idu.cs.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
@@ -20,58 +21,89 @@ import idu.cs.repository.UserRepository;
 
 @Controller
 public class UserController {
-	@Autowired UserRepository userRepo; // Dependency Injection
-	
+	@Autowired
+	UserRepository userRepo; // Dependency Injection
+
 	@GetMapping("/")
 	public String home(Model model) {
 		return "index";
 	}
-	@GetMapping("/user-login")
+
+	@GetMapping("/user-login-form")
 	public String getLoginForm(Model model) {
 		return "login";
 	}
+
+	@PostMapping("/login")
+	public String loginUser(@Valid User user, HttpSession session) {
+		System.out.println("process"+ user.getUserid());
+		User sessionUser = userRepo.findByUserid(user.getUserid());
+		if(sessionUser == null) {
+			System.out.println("id 오루");
+			return "redirect:/user-login-form";
+		}
+		if(sessionUser.getUserpw().equals(user.getUserpw())) {
+			System.out.println("password 오루");
+			return "redirect:/user-login-form";
+		}
+		//userRepo.save(user);
+
+		session.setAttribute("user", sessionUser);
+		return "redirect:/";
+	}
 	
+	@GetMapping("/user-register-form")
+	public String getForm(Model model) {
+		return "register";
+	}
+
 	@GetMapping("/users")
 	public String getAllUser(Model model) {
 		model.addAttribute("users", userRepo.findAll());
 		return "userlist";
 	}
+
 	@PostMapping("/users")
-	public String createUser(@Valid @RequestBody User user, Model model) {
+	public String createUser(@Valid User user, Model model) {
 		
-		userRepo.save(user);
-		
+		if(userRepo.save(user) != null) {
+			System.out.println("Database  성공");
+		}
+		else {
+			System.out.println("Database  실패");
+		}
 		model.addAttribute("users", userRepo.findAll());
 		return "redirect:/users";
 	}
 
 	@GetMapping("/users/{id}")
-	public String getUserById(@PathVariable(value = "id") Long userId, Model model)
-			throws ResourceNotFoundException {
-		User user = userRepo.findById(userId).get(); // -> new ResourceNotFoundException("User not found for this id :: " + userId));
+	public String getUserById(@PathVariable(value = "id") Long userId, Model model) throws ResourceNotFoundException {
+		User user = userRepo.findById(userId).get(); // -> new ResourceNotFoundException("User not found for this id ::
+														// " + userId));
 		model.addAttribute("user", user);
 		return "user";
-		//return ResponseEntity.ok().body(user);
+		// return ResponseEntity.ok().body(user);
 	}
-	
+
 	@GetMapping("/users/fn")
-	public String getUserByName(@Param(value="name") String name, Model model)
-			throws ResourceNotFoundException {
-		List<User> users = userRepo.findByName(name); // -> new ResourceNotFoundException("User not found for this id :: " + userId));
+	public String getUserByName(@Param(value = "name") String name, Model model) throws ResourceNotFoundException {
+		List<User> users = userRepo.findByName(name); // -> new ResourceNotFoundException("User not found for this id ::
+														// " + userId));
 		model.addAttribute("users", users);
 		return "userlist";
-		//return ResponseEntity.ok().body(user);
+		// return ResponseEntity.ok().body(user);
 	}
-	
-	@PutMapping("/users/{id}") //@patchMapping 
+
+	@PutMapping("/users/{id}") // @patchMapping
 	public String updateUser(@PathVariable(value = "id") Long userId, @Valid User userDetails, Model model) {
-		User user = userRepo.findById(userId).get(); //user 는 DB로 부터 읽어온 객체
-		user.setName(userDetails.getName()); //userDetails는 전송한 객체
+		User user = userRepo.findById(userId).get(); // user 는 DB로 부터 읽어온 객체
+		user.setName(userDetails.getName()); // userDetails는 전송한 객체
 		user.setCompany(userDetails.getCompany());
 		userRepo.save(user);
 		model.addAttribute("users", userRepo.findAll());
 		return "redirect:/users";
 	}
+
 	@DeleteMapping("/users/{id}")
 	public String deleteUser(@PathVariable(value = "id") Long userId, Model model) {
 		User user = userRepo.findById(userId).get();
@@ -79,5 +111,5 @@ public class UserController {
 		model.addAttribute("name", user.getName());
 		return "user-deleted";
 	}
-	
+
 }

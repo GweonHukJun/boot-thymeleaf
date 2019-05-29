@@ -19,7 +19,8 @@ import idu.cs.domain.User;
 import idu.cs.exception.ResourceNotFoundException;
 import idu.cs.repository.UserRepository;
 
-@Controller
+@Controller //spring Framework에게 이 클래스로 부터 작성된 객체는 controller 역할을 함을 알려줌
+//spring 이 이 클래스로 부터 Bean  객체를 생성해서 등록할 수 있음
 public class UserController {
 	@Autowired
 	UserRepository userRepo; // Dependency Injection
@@ -36,19 +37,21 @@ public class UserController {
 
 	@PostMapping("/login")
 	public String loginUser(@Valid User user, HttpSession session) {
-		System.out.println("process"+ user.getUserid());
 		User sessionUser = userRepo.findByUserid(user.getUserid());
 		if(sessionUser == null) {
 			System.out.println("id 오루");
 			return "redirect:/user-login-form";
 		}
 		if(sessionUser.getUserpw().equals(user.getUserpw())) {
+			session.setAttribute("user", sessionUser);
+		}
+		else {
 			System.out.println("password 오루");
 			return "redirect:/user-login-form";
 		}
 		//userRepo.save(user);
 
-		session.setAttribute("user", sessionUser);
+		
 		return "redirect:/";
 	}
 	
@@ -66,11 +69,12 @@ public class UserController {
 	@PostMapping("/users")
 	public String createUser(@Valid User user, Model model) {
 		
+	
 		if(userRepo.save(user) != null) {
-			System.out.println("Database  성공");
+		System.out.println("Database  성공");
 		}
 		else {
-			System.out.println("Database  실패");
+			System.out.println("Database 실패 ");
 		}
 		model.addAttribute("users", userRepo.findAll());
 		return "redirect:/users";

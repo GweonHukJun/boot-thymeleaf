@@ -1,6 +1,7 @@
 package idu.cs.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -55,6 +56,20 @@ public class UserController {
 		return "redirect:/";
 	}
 	
+	@GetMapping("/logout")
+	public String logoutUser(HttpSession session) {
+		session.removeAttribute("user");
+		// session.invalidate();
+		//모든 세션을 삭제한다.
+		return "redirect:/";
+	}
+	
+	@GetMapping("/update")
+	public String updatePage(HttpSession session) {
+		
+		return "update";
+	}
+	
 	@GetMapping("/user-register-form")
 	public String getForm(Model model) {
 		return "register";
@@ -80,6 +95,22 @@ public class UserController {
 		return "redirect:/users";
 	}
 
+	@PostMapping("/update")
+	public String updateUser(@Valid User user, Model model, HttpSession session) {
+		
+		User sessionUser = userRepo.findByUserid(user.getUserid());
+		
+		sessionUser.setName(user.getName());
+		sessionUser.setCompany(user.getCompany());
+		sessionUser.setUserid(user.getUserid());
+		sessionUser.setUserpw(user.getUserpw());
+		userRepo.save(sessionUser);
+		
+		session.setAttribute("user", sessionUser);
+		model.addAttribute("users", userRepo.findAll());
+		return "userlist";
+	}
+	
 	@GetMapping("/users/{id}")
 	public String getUserById(@PathVariable(value = "id") Long userId, Model model) throws ResourceNotFoundException {
 		User user = userRepo.findById(userId).get(); // -> new ResourceNotFoundException("User not found for this id ::

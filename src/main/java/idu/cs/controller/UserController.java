@@ -64,15 +64,13 @@ public class UserController {
 		return "redirect:/";
 	}
 	
-<<<<<<< HEAD
+
 	@GetMapping("/update")
 	public String updatePage(HttpSession session) {
 		
 		return "update";
 	}
 	
-=======
->>>>>>> refs/remotes/origin/master
 	@GetMapping("/user-register-form")
 	public String getForm(Model model) {
 		return "register";

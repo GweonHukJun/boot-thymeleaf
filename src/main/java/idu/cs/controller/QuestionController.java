@@ -27,7 +27,7 @@ import idu.cs.service.UserService;
 
 @Controller //spring Framework에게 이 클래스로 부터 작성된 객체는 controller 역할을 함을 알려줌
 //spring 이 이 클래스로 부터 Bean  객체를 생성해서 등록할 수 있음
-public class UserController {
+public class QuestionController {
 	
 	@Autowired UserService userService;
 	

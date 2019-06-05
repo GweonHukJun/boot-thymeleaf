@@ -52,8 +52,8 @@ public class QuestionEntity {
 		
 		UserEntity entity = new UserEntity();
 		entity.buildEntity(question.getWriter());
-		
 		writer = entity;
+		
 		contents = question.getContents();
 		createTime = question.getCreateTime();
 	}

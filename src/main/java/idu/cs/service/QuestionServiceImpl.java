@@ -2,8 +2,11 @@ package idu.cs.service;
 
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import idu.cs.domain.Question;
 
+@Service("questionService")
 public class QuestionServiceImpl implements QuestionService {
 
 	@Override
